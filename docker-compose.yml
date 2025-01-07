@@ -1,0 +1,38 @@
+services:
+  mysql:
+    container_name: mysql
+    restart:
+      always
+    image: mysql:8.0.30
+    ports:
+      - 3306:3306
+    networks:
+      - auth_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=baihaQ123
+  auth_service:
+    container_name: auth_service
+    restart:
+      always
+    image: auth_service:1.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    networks:
+      - auth_network
+    environment:
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=baihaQ123
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DB=product_service_db
+    volumes:
+      - auth_db_mysql:/data/db
+
+volumes:
+  auth_db_mysql:
+
+networks:
+  auth_network:
+    name: auth_network
